@@ -54,8 +54,7 @@ public class TicTacToe {
                 signCode = scanner.nextInt();
             }
         }
-        System.out.println("Sign of player 1 is " + playersSign[0]
-                + ", sign of player 2 is " + playersSign[1]);
+        System.out.println("Sign of player 1 is " + playersSign[0] + ", sign of player 2 is " + playersSign[1]);
         return playersSign;
     }
 
@@ -167,8 +166,8 @@ public class TicTacToe {
 
     private void printField() {
         for (char[] chars : field) {
-            for (char aChar : chars) {
-                System.out.print(aChar + " ");
+            for (char cell : chars) {
+                System.out.print(cell + " ");
             }
             System.out.println();
         }
