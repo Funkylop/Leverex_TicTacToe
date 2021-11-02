@@ -174,7 +174,7 @@ public class TicTacToe {
     }
 
     private void setFieldSize() {
-        int lineSize = 3;
+        final int lineSize = 3;
         field = new char[lineSize][lineSize];
     }
 }
