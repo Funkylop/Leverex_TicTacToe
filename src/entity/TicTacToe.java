@@ -5,25 +5,28 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class TicTacToe {
-
-    private final char[][] field = new char[3][3];
-    private final char MOTION_X = 'X';
-    private final char MOTION_O = 'O';
-    private final char EMPTY_CELL = '-';
+    private char[][] field;
+    private static final char EMPTY_CELL = '-';
 
     public TicTacToe() {
-
     }
 
-    public void menu() {
+    public final void menu() {
+        final int modeVsPlayerCode = 1;
+        final int modeVsCompCode = 2;
+        final int exitCode = 3;
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Choose game mode: \n 1. Versus computer \n 2. Versus player \n 3. Exit");
+        System.out.println("""
+                Choose game mode:\s
+                 1. Versus computer\s
+                 2. Versus player\s
+                 3. Exit""");
         int modeCode = scanner.nextInt();
         while (true) {
-            if (modeCode == 1 || modeCode == 2) {
+            if (modeCode == modeVsCompCode || modeCode == modeVsPlayerCode) {
                 game(modeCode, scanner);
                 break;
-            } else if (modeCode == 3) {
+            } else if (modeCode == exitCode) {
                 return;
             } else {
                 System.out.println("You entered an incorrect value, try another value!");
@@ -31,27 +34,37 @@ public class TicTacToe {
             }
         }
     }
-
-    private void game(int modeCode, Scanner scanner) {
-        System.out.println("Choose sign for person 1: \n 1. O \n 2. X");
-        char firstPlayerSign, secondPlayerSign;
+    private char[] chooseSign(final Scanner scanner) {
+        System.out.println("Choose sign for player 1: \n 1. O \n 2. X");
+        char[] playersSign = new char[2];
         int signCode = scanner.nextInt();
-        while(true) {
+        while (true) {
+            char signX = 'X';
+            char signO = 'O';
             if (signCode == 1) {
-                firstPlayerSign = MOTION_O;
-                secondPlayerSign = MOTION_X;
+                playersSign[0] = signO;
+                playersSign[1] = signX;
                 break;
             } else if (signCode == 2) {
-                firstPlayerSign = MOTION_X;
-                secondPlayerSign = MOTION_O;
+                playersSign[0] = signX;
+                playersSign[1] = signO;
                 break;
             } else {
                 System.out.println("You entered an incorrect value, try another value!");
                 signCode = scanner.nextInt();
             }
         }
-        System.out.println("Sign of player 1 is " + firstPlayerSign + ", sign of player 2 is " + secondPlayerSign);
+        System.out.println("Sign of player 1 is " + playersSign[0]
+                + ", sign of player 2 is " + playersSign[1]);
+        return playersSign;
+    }
+
+    private void game(final int modeCode, final Scanner scanner) {
+        char[] playersSign = chooseSign(scanner);
+        char firstPlayerSign = playersSign[0];
+        char secondPlayerSign = playersSign[1];
         int countOfMove = 0;
+        setFieldSize();
         createGameField();
         while (true) {
             printField();
@@ -86,27 +99,37 @@ public class TicTacToe {
         }
     }
 
-    private boolean checkLine(int x, int y, char sign, int xRatio, int yRatio) {
-        for (int i = 0; i < field.length; i++)
-        {
-         if (field[x + i * xRatio][y + i * yRatio] != sign) return false;
+    private boolean checkLine(final int x, final int y, final char sign, final int xRatio, final int yRatio) {
+        for (int i = 0; i < field.length; i++) {
+            if (field[x + i * xRatio][y + i * yRatio] != sign) {
+                return false;
+            }
         }
         return true;
     }
 
-    private boolean checkWin(char sign) {
-        for(int i = 0; i < field.length; i++) {
-            if (checkLine(0, i, sign, 1, 0)) return true;
-            if (checkLine(i, 0, sign, 0, 1)) return true;
+    private boolean checkWin(final char sign) {
+        for (int i = 0; i < field.length; i++) {
+            if (checkLine(0, i, sign, 1, 0)) {
+                return true;
+            }
+            if (checkLine(i, 0, sign, 0, 1)) {
+                return true;
+            }
         }
-        if (checkLine(0, 0, sign, 1, 1)) return true;
-        if (checkLine(0, field.length - 1, sign, 1, -1)) return true;
+        if (checkLine(0, 0, sign, 1, 1)) {
+            return true;
+        }
+        if (checkLine(0, field.length - 1, sign, 1, -1)) {
+            return true;
+        }
         return false;
     }
 
-    private void personMove(char sign) {
+    private void personMove(final char sign) {
         Scanner scanner = new Scanner(System.in);
-        int x, y;
+        int x;
+        int y;
         System.out.println("Choose X and Y (1..3). Make your move!");
         do {
             x = scanner.nextInt() - 1;
@@ -115,19 +138,22 @@ public class TicTacToe {
         field[x][y] = sign;
     }
 
-    private void compMove(char sign) {
+    private void compMove(final char sign) {
         Random random = new Random();
-        int x, y;
+        int x;
+        int y;
         System.out.println("Computer's move!");
         do {
-            x = random.nextInt(3);
-            y = random.nextInt(3);
+            x = random.nextInt(field.length);
+            y = random.nextInt(field.length);
         } while (isValidMove(x, y));
         field[x][y] = sign;
     }
 
-    private boolean isValidMove(int x, int y) {
-        if (x < 0 || y < 0 || x > field.length - 1 || y > field.length - 1){
+    private boolean isValidMove(final int x, final int y) {
+        if (x < 0 || y < 0
+                || x > field.length - 1
+                || y > field.length - 1) {
             return true;
         }
         return field[x][y] != EMPTY_CELL;
@@ -140,11 +166,16 @@ public class TicTacToe {
     }
 
     private void printField() {
-        for (int i = 0; i < field.length; i++) {
-            for (int j = 0; j < field[i].length; j++) {
-                System.out.print(field[i][j] + " ");
+        for (char[] chars : field) {
+            for (char aChar : chars) {
+                System.out.print(aChar + " ");
             }
             System.out.println();
         }
+    }
+
+    private void setFieldSize() {
+        int lineSize = 3;
+        field = new char[lineSize][lineSize];
     }
 }
