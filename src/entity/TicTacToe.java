@@ -33,6 +33,7 @@ public class TicTacToe {
                 modeCode = scanner.nextInt();
             }
         }
+        scanner.close();
     }
     private char[] chooseSign(final Scanner scanner) {
         System.out.println("Choose sign for player 1: \n 1. O \n 2. X");
@@ -65,6 +66,7 @@ public class TicTacToe {
         int countOfMove = 0;
         setFieldSize();
         createGameField();
+        int numberOfMaxMoves = (int) Math.pow(field.length, 2);
         while (true) {
             printField();
             personMove(firstPlayerSign);
@@ -90,7 +92,7 @@ public class TicTacToe {
                 printField();
                 break;
             }
-            if (countOfMove == Math.pow(field.length, 2)) {
+            if (countOfMove == numberOfMaxMoves) {
                 printField();
                 System.out.println("It's a draw!");
                 break;
@@ -165,12 +167,14 @@ public class TicTacToe {
     }
 
     private void printField() {
+        System.out.println("========");
         for (char[] chars : field) {
             for (char cell : chars) {
                 System.out.print(cell + " ");
             }
             System.out.println();
         }
+        System.out.println("========");
     }
 
     private void setFieldSize() {
